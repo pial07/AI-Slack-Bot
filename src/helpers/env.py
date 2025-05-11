@@ -18,4 +18,4 @@ def get_config():
     from decouple import config    
     return config
 
-cofig=get_config()
+config=get_config()

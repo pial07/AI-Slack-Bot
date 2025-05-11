@@ -1,5 +1,3 @@
-from .env import get_config
+from .env import config
 
-_all__ = [
-    "get_config",
-]
+__all__ = ['config']

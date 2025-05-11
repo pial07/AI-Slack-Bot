@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+import helpers
+import ssl
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,8 +27,17 @@ SECRET_KEY = 'django-insecure-$pj7ax6&ukwz3c5=c2#ct%##*bglg4=q1_pza9a%mj9nj9d3k8
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [".trycloudflare.com"]
-CSRF_TRUSTED_ORIGINS = ["https://estate-lu-balanced-temple.trycloudflare.com"]
+
+# settings.py
+ALLOWED_HOSTS = [           # Localhost
+    'e4db-110-76-129-224.ngrok-free.app'  # Your public ngrok domain
+]
+# settings.py
+CSRF_TRUSTED_ORIGINS = [
+    'https://e4db-110-76-129-224.ngrok-free.app',  # Your public ngrok domain
+]
+
+
 
 
 # Application definition
@@ -38,6 +49,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'bot',
+    'django_celery_beat',
+    'django_celery_results',
+    
 ]
 
 MIDDLEWARE = [
@@ -121,3 +136,24 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+
+
+CELERY_BROKER_URL=helpers.config("CELERY_BROKER_URL", default=None, cast=str)
+
+CELERY_RESULT_BACKEND = "django-db"
+CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers.DatabaseScheduler"
+CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
+
+# SSL Configuration for Celery broker (Upstash Redis)
+BROKER_USE_SSL = {
+    'ssl_cert_reqs': None,  # equivalent to CERT_NONE
+    'ssl_check_hostname': False
+}
+
+# If using Redis as result backend (not needed for django-db)
+CELERY_REDIS_BACKEND_USE_SSL = {
+    'ssl_cert_reqs': None,
+    'ssl_check_hostname': False
+}
